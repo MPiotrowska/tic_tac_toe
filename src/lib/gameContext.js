@@ -1,6 +1,7 @@
 import React from "react";
 import { newTicTacToeGrid } from "../helpers/generateGrid";
 import { clone } from "../helpers/clone";
+import { checkForWin, checkForDraw } from "../helpers/checkThree";
 
 const GameStateContext = React.createContext();
 const GameDispatchContext = React.createContext();
@@ -10,26 +11,42 @@ const NEXT_TURN = {
   O: "X",
 };
 
-const initialState = {
+const getInitialState = () => ({
   grid: newTicTacToeGrid(),
   turn: "X",
-};
+  status: "inProgress",
+});
 
 function gameReducer(state, action) {
+  if (state.status === "success" && action.type !== "RESET") {
+    return state;
+  }
   switch (action.type) {
     case "CLICK": {
-
       const { x, y } = action.payload;
       const nextState = clone(state);
-
       if (state.grid[y][x]) {
         return state;
       }
-
       nextState.grid[y][x] = state.turn;
+
+      const flatGrid = nextState.grid.flat(2);
+
+      if (checkForWin(flatGrid)) {
+        nextState.status = "success";
+        return nextState;
+      }
+
+      if (checkForDraw(flatGrid)) {
+        return getInitialState();
+      }
+
       nextState.turn = NEXT_TURN[state.turn];
-      
-      return nextState
+      return nextState;
+    }
+
+    case "RESET": {
+      return getInitialState();
     }
 
     default: {
@@ -39,7 +56,7 @@ function gameReducer(state, action) {
 }
 
 function GameProvider({ children }) {
-  const [state, dispatch] = React.useReducer(gameReducer, initialState);
+  const [state, dispatch] = React.useReducer(gameReducer, getInitialState());
   return (
     <GameStateContext.Provider value={state}>
       <GameDispatchContext.Provider value={dispatch}>
