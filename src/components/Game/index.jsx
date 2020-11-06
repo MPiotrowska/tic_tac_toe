@@ -14,9 +14,26 @@ export const Game = () => {
     });
   };
 
+  const reset = () => {
+    dispatch({
+      type: "RESET",
+    });
+  };
+
   return (
-    <div className="game">
-      <Grid grid={gameState.grid} handleClick={handleClick} />
+    <div className="gameContainer">
+      <div className="gameInnerContainer">
+        <div>Next turn: {gameState.turn}</div>
+        <div>
+          {gameState.status === "success" ? `${gameState.turn} won!` : null}
+        </div>
+        <button onClick={reset} type="button" className="resetButton">
+          reset
+        </button>
+      </div>
+      <div className="game">
+        <Grid grid={gameState.grid} handleClick={handleClick} />
+      </div>
     </div>
   );
 };
