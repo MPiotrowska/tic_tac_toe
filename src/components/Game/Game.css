@@ -1,7 +1,26 @@
+.gameContainer {
+display:flex;
+flex-direction: column;
+width: 300px;
+margin:auto;
+}
+
 .game {
     max-width: 75%;
     display: flex;
     justify-content: center;
     margin: auto;
 
+}
+
+.resetButton {
+    max-width: 70px;
+    text-align: center;
+  
+}
+
+.gameInnerContainer {
+    display: flex;
+    justify-content: space-between;
+    
 }
